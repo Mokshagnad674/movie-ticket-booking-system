@@ -62,9 +62,9 @@ export default function BookingForm(props) {
               margin="none"
               fullWidth
               id="start-date"
-              label="Start Date"
-              minDate={new Date(showtime.startDate)}
-              maxDate={new Date(showtime.endDate)}
+              label="Select Date"
+              minDate={new Date()}
+              maxDate={new Date(new Date().getFullYear(), 11, 31)}
               value={selectedDate}
               onChange={date => onChangeDate(date._d)}
               KeyboardButtonProps={{

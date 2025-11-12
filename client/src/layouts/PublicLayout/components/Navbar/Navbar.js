@@ -60,17 +60,26 @@ class Navbar extends Component {
             <UserPopover logout={logout}>
               <List component="nav">
                 {user && (
-                  <ListItem>
-                    <Link
-                      className={classes.navLink}
-                      to={
-                        user.role !== 'guest'
-                          ? '/admin/dashboard'
-                          : '/mydashboard'
-                      }>
-                      Dashboard
-                    </Link>
-                  </ListItem>
+                  <>
+                    <ListItem>
+                      <Link
+                        className={classes.navLink}
+                        to={
+                          user.role !== 'guest'
+                            ? '/admin/dashboard'
+                            : '/mydashboard'
+                        }>
+                        Dashboard
+                      </Link>
+                    </ListItem>
+                    {user.role === 'guest' && (
+                      <ListItem>
+                        <Link className={classes.navLink} to="/mydashboard">
+                          My Bookings
+                        </Link>
+                      </ListItem>
+                    )}
+                  </>
                 )}
 
                 {isAuth ? (
@@ -144,6 +153,13 @@ class Navbar extends Component {
                   Cinemas
                 </Link>
               </li>
+              {user && user.role === 'guest' && (
+                <li className={classes.innerNavListItem}>
+                  <Link className={classes.innerNavLink} to="/mydashboard">
+                    My Bookings
+                  </Link>
+                </li>
+              )}
             </ul>
           </div>
         </div>

@@ -22,28 +22,31 @@ router.post(
   auth.enhance,
   upload('movies').single('file'),
   async (req, res, next) => {
-    console.log('in here');
     const url = `${req.protocol}://${req.get('host')}`;
     const { file } = req;
     const movieId = req.params.id;
-    console.log('check movie id', movieId);
+    
     try {
       if (!file) {
-        const error = new Error('Please upload a file');
-        error.httpStatusCode = 400;
-        return next(error);
+        return res.status(400).send({ error: 'Please upload a file' });
       }
+      
       const movie = await Movie.findById(movieId);
-
-      console.log('check new', movie);
-
-      if (!movie) return res.sendStatus(404);
-      movie.image = `${url}/${file.path}`;
+      if (!movie) {
+        return res.status(404).send({ error: 'Movie not found' });
+      }
+      
+      movie.image = `${url}/${file.path.replace(/\\/g, '/')}`;
       await movie.save();
-      res.send({ movie, file });
+      
+      res.send({ 
+        message: 'Image uploaded successfully',
+        movie,
+        imageUrl: movie.image
+      });
     } catch (e) {
-      console.log(e);
-      res.sendStatus(400).send(e);
+      console.error('Movie image upload error:', e);
+      res.status(400).send({ error: e.message });
     }
   }
 );

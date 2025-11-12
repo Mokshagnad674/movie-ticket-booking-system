@@ -70,13 +70,19 @@ class BookingPage extends Component {
       getCinemasUserModeling,
       getShowtimes,
       getReservations,
-      getSuggestedReservationSeats
+      getSuggestedReservationSeats,
+      setSelectedDate
     } = this.props;
     getMovie(match.params.id);
     user ? getCinemasUserModeling(user.username) : getCinemas();
     getShowtimes();
     getReservations();
     if (user) getSuggestedReservationSeats(user.username);
+    
+    // Set default date to today
+    if (!this.props.selectedDate) {
+      setSelectedDate(new Date());
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -89,42 +95,60 @@ class BookingPage extends Component {
     }
   }
 
-  // JSpdf Generator For generating the PDF
-  jsPdfGenerator = () => {
-    const { movie, cinema, selectedDate, selectedTime, QRCode } = this.props;
-    const doc = new jsPDF();
-    doc.setFont('helvetica');
-    doc.setFontType('bold');
-    doc.setFontSize(22);
-    doc.text(movie.title, 20, 20);
-    doc.setFontSize(16);
-    doc.text(cinema.name, 20, 30);
-    doc.text(
-      `Date: ${new Date(
-        selectedDate
-      ).toLocaleDateString()} - Time: ${selectedTime}`,
-      20,
-      40
-    );
-    doc.addImage(QRCode, 'JPEG', 15, 40, 160, 160);
-    doc.save(`${movie.title}-${cinema.name}.pdf`);
+  // Show QR Code in modal or alert
+  showQRCode = () => {
+    const { QRCode, setAlert } = this.props;
+    if (QRCode) {
+      // Create a new window to display QR code
+      const qrWindow = window.open('', '_blank', 'width=400,height=500');
+      qrWindow.document.write(`
+        <html>
+          <head><title>Ticket QR Code</title></head>
+          <body style="text-align: center; padding: 20px; font-family: Arial;">
+            <h2>Your Ticket QR Code</h2>
+            <p>Show this QR code at the cinema entrance</p>
+            <img src="${QRCode}" alt="Ticket QR Code" style="max-width: 300px; margin: 20px;" />
+            <br>
+            <button onclick="window.print()" style="padding: 10px 20px; margin: 10px;">Print</button>
+            <button onclick="window.close()" style="padding: 10px 20px; margin: 10px;">Close</button>
+          </body>
+        </html>
+      `);
+    } else {
+      setAlert('QR Code not available', 'error', 3000);
+    }
   };
 
   onSelectSeat = (row, seat) => {
-    const { cinema, setSelectedSeats } = this.props;
-    const seats = [...cinema.seats];
-    const newSeats = [...seats];
-    if (seats[row][seat] === 1) {
-      newSeats[row][seat] = 1;
-    } else if (seats[row][seat] === 2) {
-      newSeats[row][seat] = 0;
-    } else if (seats[row][seat] === 3) {
-      newSeats[row][seat] = 2;
-    } else {
-      newSeats[row][seat] = 2;
+    try {
+      const { cinema, setSelectedSeats } = this.props;
+      if (!cinema || !cinema.seats || !cinema.seats[row]) return;
+      
+      const seats = [...cinema.seats];
+      const newSeats = [...seats];
+      if (seats[row][seat] === 1) {
+        newSeats[row][seat] = 1;
+      } else if (seats[row][seat] === 2) {
+        newSeats[row][seat] = 0;
+      } else if (seats[row][seat] === 3) {
+        newSeats[row][seat] = 2;
+      } else {
+        newSeats[row][seat] = 2;
+      }
+      setSelectedSeats([row, seat]);
+      const { socket } = this.state; 
+      if (socket) { 
+        const showtimeId = (this.props.showtimes && this.props.showtimes.length) ? this.props.showtimes[0]._id : null; 
+        if (seats[row][seat] === 2) { 
+          socket.emit('unlockSeat', { showtimeId, row, col: seat }); 
+        } else { 
+          socket.emit('lockSeat', { showtimeId, row, col: seat }); 
+        } 
+      }
+    } catch (error) {
+      console.error('Error selecting seat:', error);
+      this.props.setAlert('Error selecting seat', 'error', 3000);
     }
-    setSelectedSeats([row, seat]);
-    const { socket } = this.state; if (socket) { const showtimeId = (this.props.showtimes && this.props.showtimes.length) ? this.props.showtimes[0]._id : null; if (seats[row][seat] === 2) { socket.emit('unlockSeat', { showtimeId, row, col: seat }); } else { socket.emit('lockSeat', { showtimeId, row, col: seat }); } }
   };
 
   async checkout() {
@@ -212,25 +236,39 @@ class BookingPage extends Component {
   }
 
   onGetReservedSeats = () => {
-    const { reservations, cinema, selectedDate, selectedTime } = this.props;
+    try {
+      const { reservations, cinema, selectedDate, selectedTime } = this.props;
 
-    if (!cinema) return [];
-    const newSeats = [...cinema.seats];
+      if (!cinema || !cinema.seats || !Array.isArray(cinema.seats)) return [];
+      const newSeats = [...cinema.seats];
 
-    const filteredReservations = reservations.filter(
-      reservation =>
-        new Date(reservation.date).toLocaleDateString() ===
-          new Date(selectedDate).toLocaleDateString() &&
-        reservation.startAt === selectedTime
-    );
-    if (filteredReservations.length && selectedDate && selectedTime) {
-      const reservedSeats = filteredReservations
-        .map(reservation => reservation.seats)
-        .reduce((a, b) => a.concat(b));
-      reservedSeats.forEach(([row, seat]) => (newSeats[row][seat] = 1));
+      if (!reservations || !Array.isArray(reservations)) return newSeats;
+
+      const filteredReservations = reservations.filter(
+        reservation =>
+          reservation.date &&
+          reservation.startAt &&
+          new Date(reservation.date).toLocaleDateString() ===
+            new Date(selectedDate).toLocaleDateString() &&
+          reservation.startAt === selectedTime
+      );
+      
+      if (filteredReservations.length && selectedDate && selectedTime) {
+        const reservedSeats = filteredReservations
+          .map(reservation => reservation.seats || [])
+          .reduce((a, b) => a.concat(b), []);
+        reservedSeats.forEach(([row, seat]) => {
+          if (newSeats[row] && typeof newSeats[row][seat] !== 'undefined') {
+            newSeats[row][seat] = 1;
+          }
+        });
+        return newSeats;
+      }
       return newSeats;
+    } catch (error) {
+      console.error('Error getting reserved seats:', error);
+      return [];
     }
-    return newSeats;
   };
 
   onGetSuggestedSeats = (seats, suggestedSeats) => {
@@ -421,7 +459,7 @@ class BookingPage extends Component {
                 ignore={resetCheckout}
                 invitations={invitations}
                 onSetInvitation={setInvitation}
-                onDownloadPDF={this.jsPdfGenerator}
+                onDownloadPDF={this.showQRCode}
               />
             )}
 

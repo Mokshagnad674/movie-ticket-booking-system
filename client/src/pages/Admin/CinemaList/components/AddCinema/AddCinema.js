@@ -187,7 +187,7 @@ class AddCinema extends Component {
           <div className={classes.field}>
             <TextField
               className={classes.textField}
-              label="Ticket Price"
+              label="Ticket Price (₹)"
               margin="dense"
               type="number"
               value={ticketPrice}

@@ -48,9 +48,9 @@ export default function BookingInvitation(props) {
         <Box width={1} textAlign="center">
           <Button
             color="primary"
-            variant="outlined"
+            variant="contained"
             onClick={() => onDownloadPDF()}>
-            Download Pass
+            Show QR Code
           </Button>
         </Box>
         <Grid className={classes.gridContainer} container spacing={3}>

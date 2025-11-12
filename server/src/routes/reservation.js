@@ -10,10 +10,22 @@ const router = new express.Router();
 router.post('/reservations', auth.simple, async (req, res) => {
   const reservation = new Reservation(req.body);
 
-  const QRCode = await generateQR(`https://razorpay.com`);
-
   try {
     await reservation.save();
+    
+    // Generate QR code with ticket details
+    const ticketData = {
+      reservationId: reservation._id,
+      movieId: reservation.movieId,
+      cinemaId: reservation.cinemaId,
+      date: reservation.date,
+      startAt: reservation.startAt,
+      seats: reservation.seats,
+      username: reservation.username
+    };
+    
+    const QRCode = await generateQR(JSON.stringify(ticketData));
+    
     res.status(201).send({ reservation, QRCode });
   } catch (e) {
     res.status(400).send(e);
