@@ -9,6 +9,8 @@ import {
 } from '../../../store/actions';
 import MovieCarousel from '../components/MovieCarousel/MovieCarousel';
 import MovieBanner from '../components/MovieBanner/MovieBanner';
+import MovieCardSimple from '../components/MovieCardSimple/MovieCardSimple';
+import { Typography, Container } from '@material-ui/core';
 import styles from './styles';
 
 class HomePage extends Component {
@@ -22,9 +24,9 @@ class HomePage extends Component {
       getMovieSuggestion,
       user
     } = this.props;
-    if (!movies || movies.length === 0) {
-      getMovies();
-    }
+    console.log('HomePage mounted, movies:', movies);
+    getMovies(); // Always fetch movies
+    console.log('Fetching movies...');
     if (!showtimes || showtimes.length === 0) getShowtimes();
     if (user) {
       if (!suggested || suggested.length === 0) getMovieSuggestion(user.username);
@@ -49,23 +51,24 @@ class HomePage extends Component {
       <Fragment>
         <MovieBanner movie={randomMovie} height="85vh" />
         <Box height={60} />
-        <MovieCarousel
-          carouselClass={classes.carousel}
-          title="Suggested for you"
-          movies={suggested}
-        />
-        <MovieCarousel
-          carouselClass={classes.carousel}
-          title="Now Showing"
-          to="/movie/category/nowShowing"
-          movies={nowShowing}
-        />
-        <MovieCarousel
-          carouselClass={classes.carousel}
-          title="Coming Soon"
-          to="/movie/category/comingSoon"
-          movies={comingSoon}
-        />
+        <Container maxWidth="lg" style={{marginTop: '40px'}}>
+          <Typography variant="h4" style={{color: 'white', marginBottom: '30px', textAlign: 'center'}}>
+            All Movies
+          </Typography>
+          {this.props.movies && this.props.movies.length > 0 ? (
+            <Grid container spacing={3}>
+              {this.props.movies.map((movie, index) => (
+                <Grid item xs={12} sm={6} md={4} lg={3} key={movie._id}>
+                  <MovieCardSimple movie={movie} index={index} />
+                </Grid>
+              ))}
+            </Grid>
+          ) : (
+            <div style={{textAlign: 'center', padding: '50px', color: 'white'}}>
+              <h3>Loading movies...</h3>
+            </div>
+          )}
+        </Container>
         {false && (
           <Grid container style={{ height: 500 }}>
             <Grid item xs={7} style={{ background: '#131334' }}></Grid>

@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { makeStyles } from '@material-ui/core';
-import { Typography } from '@material-ui/core';
-import { AccessTime as AccessTimeIcon } from '@material-ui/icons';
+import { Typography, IconButton, Box } from '@material-ui/core';
+import { AccessTime as AccessTimeIcon, Delete as DeleteIcon } from '@material-ui/icons';
 import { Paper } from '../../../../../components';
 
 const useStyles = makeStyles(theme => ({
@@ -53,18 +53,29 @@ const useStyles = makeStyles(theme => ({
   updateText: {
     marginLeft: theme.spacing(1),
     color: theme.palette.text.secondary
+  },
+  deleteButton: {
+    color: theme.palette.error.main,
+    marginLeft: 'auto'
   }
 }));
 
 function MovieCard(props) {
   const classes = useStyles(props);
-  const { className, movie } = props;
+  const { className, movie, onDelete } = props;
 
   const rootClassName = classNames(classes.root, className);
   return (
     <Paper className={rootClassName}>
       <div className={classes.imageWrapper}>
-        <img alt="movie" className={classes.image} src={movie.image} />
+        <img 
+          alt="movie" 
+          className={classes.image} 
+          src={movie.image || 'https://via.placeholder.com/300x450/333/FFF?text=No+Image'}
+          onError={(e) => {
+            e.target.src = 'https://via.placeholder.com/300x450/333/FFF?text=No+Image';
+          }}
+        />
       </div>
       <div className={classes.details}>
         <Typography className={classes.title} variant="h4">
@@ -74,18 +85,28 @@ function MovieCard(props) {
           {movie.description}
         </Typography>
       </div>
-      <div className={classes.stats}>
+      <Box className={classes.stats}>
         <AccessTimeIcon className={classes.updateIcon} />
         <Typography className={classes.updateText} variant="body2">
           {movie.duration} minutes
         </Typography>
-      </div>
+        {onDelete && (
+          <IconButton 
+            className={classes.deleteButton}
+            onClick={() => onDelete(movie._id)}
+            size="small"
+          >
+            <DeleteIcon />
+          </IconButton>
+        )}
+      </Box>
     </Paper>
   );
 }
 
 MovieCard.propTypes = {
-  movie: PropTypes.object.isRequired
+  movie: PropTypes.object.isRequired,
+  onDelete: PropTypes.func
 };
 
 export default MovieCard;

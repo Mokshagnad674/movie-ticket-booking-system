@@ -99,26 +99,23 @@ const Dashboard = ({ movies, cinemas, reservations, getMovies, getCinemas, getRe
     calculateStats();
   }, [movies, cinemas, reservations]);
 
-  const [recentBookings] = useState([
-    { id: 1, movie: 'Avengers: Endgame', cinema: 'PVR Mall', time: '7:00 PM', status: 'confirmed' },
-    { id: 2, movie: 'Spider-Man', cinema: 'INOX Theatre', time: '9:30 PM', status: 'pending' },
-    { id: 3, movie: 'The Batman', cinema: 'Cinepolis', time: '6:00 PM', status: 'confirmed' }
-  ]);
+  // Use real reservations data instead of hardcoded
+  const recentBookings = reservations?.slice(0, 5) || [];
 
   const quickActions = [
-    { title: 'Create New Movie', link: '/admin/create-movie', icon: <MovieIcon />, color: 'primary' },
-    { title: 'Create New Cinema', link: '/admin/create-cinema', icon: <TheatersIcon />, color: 'primary' },
-    { title: 'Manage Movies', link: '/admin/movies', icon: <MovieIcon />, color: 'secondary' },
-    { title: 'Manage Cinemas', link: '/admin/cinemas', icon: <TheatersIcon />, color: 'default' }
+    { title: 'Add New Movie', link: '/admin/create-movie', icon: <MovieIcon />, color: 'primary' },
+    { title: 'Add New Cinema', link: '/admin/create-cinema', icon: <TheatersIcon />, color: 'primary' },
+    { title: 'View Movies', link: '/admin/movies', icon: <MovieIcon />, color: 'secondary' },
+    { title: 'View Cinemas', link: '/admin/cinemas', icon: <TheatersIcon />, color: 'default' }
   ];
 
   return (
     <div className={classes.root}>
       <Typography variant="h4" gutterBottom>
-        Theatre Owner Dashboard
+        Admin Dashboard
       </Typography>
       <Typography variant="subtitle1" color="textSecondary" gutterBottom>
-        Welcome back! Here's what's happening with your theatres today.
+        Welcome back! Here's what's happening with your cinemas today.
       </Typography>
 
       {/* Stats Cards */}
@@ -214,22 +211,26 @@ const Dashboard = ({ movies, cinemas, reservations, getMovies, getCinemas, getRe
               Recent Bookings
             </Typography>
             <List>
-              {recentBookings.map((booking) => (
-                <ListItem key={booking.id} divider>
+              {recentBookings.length > 0 ? recentBookings.map((booking) => (
+                <ListItem key={booking._id} divider>
                   <ListItemIcon>
                     <EventSeatIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary={booking.movie}
-                    secondary={`${booking.cinema} • ${booking.time}`}
+                    primary={booking.movieId?.title || 'Movie'}
+                    secondary={`${booking.cinemaId?.name || 'Cinema'} • ${booking.showtime || 'Time'}`}
                   />
                   <Chip
-                    label={booking.status}
-                    color={booking.status === 'confirmed' ? 'primary' : 'default'}
+                    label="Confirmed"
+                    color="primary"
                     size="small"
                   />
                 </ListItem>
-              ))}
+              )) : (
+                <ListItem>
+                  <ListItemText primary="No recent bookings" secondary="Bookings will appear here once customers start booking tickets" />
+                </ListItem>
+              )}
             </List>
             <Box mt={2}>
               <Button

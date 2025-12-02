@@ -27,7 +27,7 @@ class Register extends Component {
       email: '',
       phone: '',
       password: '',
-      role: 'user',
+      role: 'guest',
       policy: false
     }
   };
@@ -134,19 +134,7 @@ class Register extends Component {
                         this.handleFieldChange('password', event.target.value)
                       }
                     />
-                    <FormControl className={classes.textField} variant="outlined">
-                      <InputLabel>Register as</InputLabel>
-                      <Select
-                        value={values.role}
-                        onChange={event =>
-                          this.handleFieldChange('role', event.target.value)
-                        }
-                        label="Register as"
-                      >
-                        <MenuItem value="user">Movie Enthusiast (User)</MenuItem>
-                        <MenuItem value="admin">Theatre Owner</MenuItem>
-                      </Select>
-                    </FormControl>
+
                     <div className={classes.policy}>
                       <Checkbox
                         checked={values.policy}

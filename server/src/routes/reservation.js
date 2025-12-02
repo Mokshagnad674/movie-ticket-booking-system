@@ -8,10 +8,13 @@ const router = new express.Router();
 
 // Create a reservation
 router.post('/reservations', auth.simple, async (req, res) => {
-  const reservation = new Reservation(req.body);
-
   try {
+    console.log('Reservation request:', req.body);
+    const reservation = new Reservation(req.body);
+    console.log('Reservation object created, attempting to save...');
+    
     await reservation.save();
+    console.log('Reservation saved successfully:', reservation._id);
     
     // Generate QR code with ticket details
     const ticketData = {
@@ -28,7 +31,9 @@ router.post('/reservations', auth.simple, async (req, res) => {
     
     res.status(201).send({ reservation, QRCode });
   } catch (e) {
-    res.status(400).send(e);
+    console.error('Reservation error:', e.message);
+    console.error('Full error:', e);
+    res.status(400).send({ message: e.message || 'Booking failed' });
   }
 });
 

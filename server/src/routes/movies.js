@@ -8,12 +8,17 @@ const router = new express.Router();
 
 // Create a movie
 router.post('/movies', auth.enhance, async (req, res) => {
-  const movie = new Movie(req.body);
   try {
+    console.log('Movie creation request:', req.body);
+    const movie = new Movie(req.body);
+    console.log('Movie object created, attempting to save...');
     await movie.save();
+    console.log('Movie saved successfully:', movie._id);
     res.status(201).send(movie);
   } catch (e) {
-    res.status(400).send(e);
+    console.error('Movie creation error:', e.message);
+    console.error('Full error:', e);
+    res.status(400).send({ message: e.message || 'Movie creation failed' });
   }
 });
 
@@ -36,8 +41,12 @@ router.post(
         return res.status(404).send({ error: 'Movie not found' });
       }
       
-      movie.image = `${url}/${file.path.replace(/\\/g, '/')}`;
+      // Fix the image path for proper serving
+      const imagePath = file.path.replace(/\\/g, '/');
+      movie.image = `${url}/${imagePath}`;
       await movie.save();
+      
+      console.log('Image saved with URL:', movie.image);
       
       res.send({ 
         message: 'Image uploaded successfully',

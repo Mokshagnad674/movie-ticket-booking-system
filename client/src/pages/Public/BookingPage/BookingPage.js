@@ -33,7 +33,7 @@ import BookingCheckout from './components/BookingCheckout/BookingCheckout';
 import BookingInvitation from './components/BookingInvitation/BookingInvitation';
 
 import jsPDF from 'jspdf';
-import io from 'socket.io-client';
+import { io } from 'socket.io-client';
 
 class BookingPage extends Component {
   state = { lockedSeats: {}, socket: null };
@@ -41,7 +41,7 @@ class BookingPage extends Component {
   setupSocket = () => {
     const { user } = this.props;
     const showtimeId = this.props.showtimes && this.props.showtimes.length ? this.props.showtimes[0]._id : null;
-    const socket = io();
+    const socket = io(window.location.origin);
     this.setState({ socket });
     socket.emit('join', { showtimeId, username: (user && user.username) || 'guest' });
     socket.on('locksSnapshot', ({ locks }) => {
@@ -239,8 +239,14 @@ class BookingPage extends Component {
     try {
       const { reservations, cinema, selectedDate, selectedTime } = this.props;
 
-      if (!cinema || !cinema.seats || !Array.isArray(cinema.seats)) return [];
-      const newSeats = [...cinema.seats];
+      // Create default seat structure if cinema seats don't exist
+      if (!cinema || !cinema.seats || !Array.isArray(cinema.seats)) {
+        // Create a default 10x10 seat grid
+        const defaultSeats = Array.from({length: 10}, () => Array.from({length: 10}, () => 0));
+        return defaultSeats;
+      }
+      
+      const newSeats = cinema.seats.map(row => Array.isArray(row) ? [...row] : []);
 
       if (!reservations || !Array.isArray(reservations)) return newSeats;
 
@@ -267,7 +273,8 @@ class BookingPage extends Component {
       return newSeats;
     } catch (error) {
       console.error('Error getting reserved seats:', error);
-      return [];
+      // Return default seat structure on error
+      return Array.from({length: 10}, () => Array.from({length: 10}, () => 0));
     }
   };
 

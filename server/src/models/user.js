@@ -42,8 +42,8 @@ const userSchema = Schema(
     },
     role: {
       type: String,
-      default: 'user',
-      enum: ['user', 'admin', 'superadmin'],
+      default: 'guest',
+      enum: ['guest', 'user', 'admin', 'superadmin'],
     },
 
     facebook: String,

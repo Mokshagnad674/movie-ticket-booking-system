@@ -7,7 +7,7 @@ import { MovieToolbar, MovieCard } from './components';
 import { ResponsiveDialog } from '../../../components';
 import styles from './styles';
 import AddMovie from './components/AddMovie/AddMovie';
-import { getMovies, onSelectMovie } from '../../../store/actions';
+import { getMovies, onSelectMovie, removeMovie } from '../../../store/actions';
 import { match } from '../../../utils';
 
 class MovieList extends Component {
@@ -16,6 +16,17 @@ class MovieList extends Component {
     const { movies, getMovies } = this.props;
     if (!movies.length) getMovies();
   }
+
+  handleDeleteMovie = async (movieId) => {
+    if (window.confirm('Are you sure you want to delete this movie?')) {
+      try {
+        await this.props.removeMovie(movieId);
+        this.props.getMovies(); // Refresh the list
+      } catch (error) {
+        alert('Failed to delete movie');
+      }
+    }
+  };
 
   renderMovies() {
     const { classes } = this.props;
@@ -38,7 +49,7 @@ class MovieList extends Component {
             md={6}
             xs={12}
             onClick={() => this.props.onSelectMovie(movie)}>
-            <MovieCard movie={movie} />
+            <MovieCard movie={movie} onDelete={this.handleDeleteMovie} />
           </Grid>
         ))}
       </Grid>
@@ -77,7 +88,7 @@ const mapStateToProps = ({ movieState }) => ({
   selectedMovie: movieState.selectedMovie
 });
 
-const mapDispatchToProps = { getMovies, onSelectMovie };
+const mapDispatchToProps = { getMovies, onSelectMovie, removeMovie };
 
 export default connect(
   mapStateToProps,

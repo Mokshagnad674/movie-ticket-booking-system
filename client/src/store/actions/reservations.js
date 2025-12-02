@@ -11,9 +11,11 @@ export const getReservations = () => async dispatch => {
         Authorization: `Bearer ${token}`
       }
     });
-    const reservations = await response.json();
     if (response.ok) {
+      const reservations = await response.json();
       dispatch({ type: GET_RESERVATIONS, payload: reservations });
+    } else {
+      console.error('Failed to fetch reservations:', response.status, response.statusText);
     }
   } catch (error) {
     dispatch(setAlert(error.message, 'error', 5000));
@@ -44,6 +46,7 @@ export const getSuggestedReservationSeats = username => async dispatch => {
 
 export const addReservation = reservation => async dispatch => {
   try {
+    console.log('Creating reservation:', reservation);
     const token = localStorage.getItem('jwtToken');
     const url = '/reservations';
     const response = await fetch(url, {
@@ -54,20 +57,32 @@ export const addReservation = reservation => async dispatch => {
       },
       body: JSON.stringify(reservation)
     });
+    
+    console.log('Response status:', response.status);
+    
     if (response.ok) {
-      const { reservation, QRCode } = await response.json();
+      const { reservation: newReservation, QRCode } = await response.json();
       dispatch(setAlert('Reservation Created', 'success', 5000));
       return {
         status: 'success',
         message: 'Reservation Created',
-        data: { reservation, QRCode }
+        data: { reservation: newReservation, QRCode }
+      };
+    } else {
+      const errorData = await response.json();
+      console.error('Reservation error:', errorData);
+      dispatch(setAlert(errorData.message || 'Booking failed', 'error', 5000));
+      return {
+        status: 'error',
+        message: errorData.message || 'Reservation failed'
       };
     }
   } catch (error) {
+    console.error('Reservation error:', error);
     dispatch(setAlert(error.message, 'error', 5000));
     return {
       status: 'error',
-      message: ' Reservation have not been created, try again.'
+      message: 'Reservation have not been created, try again.'
     };
   }
 };

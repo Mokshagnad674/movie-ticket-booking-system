@@ -10,12 +10,15 @@ router.post('/users', async (req, res) => {
   try {
     console.log('Registration request:', req.body);
     const user = new User(req.body);
+    console.log('User object created, attempting to save...');
     await user.save();
+    console.log('User saved successfully');
     const token = await user.generateAuthToken();
     console.log('User created successfully:', user.username);
     res.status(201).send({ user, token });
   } catch (e) {
-    console.error('Registration error:', e);
+    console.error('Registration error details:', e.message);
+    console.error('Full error:', e);
     res.status(400).send({ message: e.message || 'Registration failed' });
   }
 });

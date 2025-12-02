@@ -3,16 +3,21 @@ import { setAlert } from './alert';
 
 export const uploadMovieImage = (id, image) => async dispatch => {
   try {
+    const token = localStorage.getItem('jwtToken');
     const data = new FormData();
     data.append('file', image);
     const url = '/movies/photo/' + id;
     const response = await fetch(url, {
       method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
       body: data
     });
     const responseData = await response.json();
     if (response.ok) {
       dispatch(setAlert('Image Uploaded', 'success', 5000));
+      dispatch(getMovies()); // Refresh movies to show updated image
     }
     if (responseData.error) {
       dispatch(setAlert(responseData.error.message, 'error', 5000));
@@ -29,9 +34,11 @@ export const getMovies = () => async dispatch => {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     });
-    const movies = await response.json();
     if (response.ok) {
+      const movies = await response.json();
       dispatch({ type: GET_MOVIES, payload: movies });
+    } else {
+      console.error('Failed to fetch movies:', response.status, response.statusText);
     }
   } catch (error) {
     dispatch(setAlert(error.message, 'error', 5000));

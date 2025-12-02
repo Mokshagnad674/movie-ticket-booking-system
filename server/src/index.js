@@ -27,7 +27,7 @@ const invitationsRouter = require('./routes/invitations');
 // ==========================
 const app = express();
 app.disable('x-powered-by');
-const port = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3001;
 
 
 
@@ -125,6 +125,6 @@ io.on('connection', (socket) => {
 // ==========================
 // Start server
 // ==========================
-server.listen(port, () =>
-  console.log(`app+socket.io running on PORT: ${port}`)
+server.listen(PORT, () =>
+  console.log(`Server running on PORT: ${PORT}`)
 );

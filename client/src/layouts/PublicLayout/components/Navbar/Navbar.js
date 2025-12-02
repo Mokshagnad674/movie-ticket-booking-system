@@ -45,12 +45,6 @@ class Navbar extends Component {
             <Link className={classes.navLink} to="/">
               Home
             </Link>
-            <Link className={classes.navLink} to="/movie/category/nowShowing">
-              Now Showing
-            </Link>
-            <Link className={classes.navLink} to="/movie/category/comingSoon">
-              Coming Soon
-            </Link>
             <Link className={classes.navLink} to="/cinemas">
               Cinemas
             </Link>
@@ -132,20 +126,6 @@ class Navbar extends Component {
               <li className={classes.innerNavListItem}>
                 <Link className={classes.innerNavLink} to="/">
                   Home
-                </Link>
-              </li>
-              <li className={classes.innerNavListItem}>
-                <Link
-                  className={classes.innerNavLink}
-                  to="/movie/category/nowShowing">
-                  Now Showing
-                </Link>
-              </li>
-              <li className={classes.innerNavListItem}>
-                <Link
-                  className={classes.innerNavLink}
-                  to="/movie/category/comingSoon">
-                  Coming Soon
                 </Link>
               </li>
               <li className={classes.innerNavListItem}>
