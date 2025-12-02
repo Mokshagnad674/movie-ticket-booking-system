@@ -7,8 +7,8 @@
     "start": "node server/src/index.js",
     "dev": "nodemon server/src/index.js",
     "client": "cd client && npm install && npm run start",
-    "build": "echo 'Skipping frontend build for now'",
-    "heroku-postbuild": "echo 'Backend only deployment'"
+    "build": "cd client && npm install && CI=false npm run build",
+    "heroku-postbuild": "npm run build"
   },
   "keywords": ["movie", "booking", "ticket", "cinema"],
   "author": "Mokshagnad",

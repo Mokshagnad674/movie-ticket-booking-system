@@ -66,17 +66,25 @@ app.use(showtimeRouter);
 app.use(reservationRouter);
 app.use(invitationsRouter);
 
-// API routes only for now
-app.get("/", (req, res) => {
-  res.json({ 
-    message: "Movie Ticket Booking API is running!",
-    endpoints: {
-      movies: "/movies",
-      cinemas: "/cinemas", 
-      reservations: "/reservations"
-    }
+// Serve frontend build files
+const buildPath = path.join(__dirname, "../../client/build");
+if (require('fs').existsSync(buildPath)) {
+  app.use(express.static(buildPath));
+  app.get("*", (req, res) =>
+    res.sendFile(path.join(buildPath, "index.html"))
+  );
+} else {
+  app.get("/", (req, res) => {
+    res.json({ 
+      message: "Movie Ticket Booking API is running!",
+      endpoints: {
+        movies: "/movies",
+        cinemas: "/cinemas", 
+        reservations: "/reservations"
+      }
+    });
   });
-});
+}
 
 
 // ==========================
