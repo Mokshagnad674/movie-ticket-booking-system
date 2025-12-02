@@ -7,7 +7,8 @@
     "start": "node server/src/index.js",
     "dev": "nodemon server/src/index.js",
     "client": "cd client && npm install && npm run start",
-    "build": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+    "build": "echo 'Build completed - API only deployment'",
+    "heroku-postbuild": "echo 'API deployment ready'"
   },
   "keywords": ["movie", "booking", "ticket", "cinema"],
   "author": "Mokshagnad",
