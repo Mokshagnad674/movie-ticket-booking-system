@@ -27,7 +27,7 @@ const invitationsRouter = require('./routes/invitations');
 // ==========================
 const app = express();
 app.disable('x-powered-by');
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 10000;
 
 
 
@@ -66,18 +66,17 @@ app.use(showtimeRouter);
 app.use(reservationRouter);
 app.use(invitationsRouter);
 
-// Serve frontend build files (only if build exists)
-const buildPath = path.join(__dirname, "../../client/build");
-if (require('fs').existsSync(buildPath)) {
-  app.use(express.static(buildPath));
-  app.get("*", (req, res) =>
-    res.sendFile(path.join(buildPath, "index.html"))
-  );
-} else {
-  app.get("*", (req, res) => {
-    res.json({ message: "Movie Ticket Booking API is running!" });
+// API routes only for now
+app.get("/", (req, res) => {
+  res.json({ 
+    message: "Movie Ticket Booking API is running!",
+    endpoints: {
+      movies: "/movies",
+      cinemas: "/cinemas", 
+      reservations: "/reservations"
+    }
   });
-}
+});
 
 
 // ==========================
