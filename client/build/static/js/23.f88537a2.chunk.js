@@ -1,1 +1,0 @@
-(this["webpackJsonpmoviestore-client"]=this["webpackJsonpmoviestore-client"]||[]).push([[23],{260:function(e,t,a){"use strict";a.r(t);var n=a(0),s=a.n(n);t.default=()=>s.a.createElement("div",{style:{padding:"2rem"}},s.a.createElement("h2",null,"Theatre Owner Account Page"),s.a.createElement("p",null,"This is a placeholder for account settings and details."))}}]);

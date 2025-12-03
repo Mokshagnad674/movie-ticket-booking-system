@@ -1,1 +1,0 @@
-(this["webpackJsonpmoviestore-client"]=this["webpackJsonpmoviestore-client"]||[]).push([[26],{410:function(e,t,s){"use strict";s.r(t);var n=s(0),a=s.n(n);t.default=()=>a.a.createElement("div",{style:{padding:"2rem"}},a.a.createElement("h2",null,"Reservation List"),a.a.createElement("p",null,"Displays all customer bookings and reservations for this theatre owner."))}}]);
