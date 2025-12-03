@@ -7,8 +7,8 @@
     "start": "node server/src/index.js",
     "dev": "nodemon server/src/index.js",
     "client": "cd client && npm install && npm run start",
-    "build": "echo 'Using public files directly'",
-    "heroku-postbuild": "echo 'No build needed'"
+    "build": "cd client && npm install --force && npm run build",
+    "heroku-postbuild": "npm run build"
   },
   "keywords": ["movie", "booking", "ticket", "cinema"],
   "author": "Mokshagnad",

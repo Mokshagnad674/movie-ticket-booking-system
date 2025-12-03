@@ -66,18 +66,25 @@ app.use(showtimeRouter);
 app.use(reservationRouter);
 app.use(invitationsRouter);
 
-// Serve static files from client/public as fallback
-app.use(express.static(path.join(__dirname, "../../client/public")));
+// Serve React build files
+const buildPath = path.join(__dirname, "../../client/build");
+const publicPath = path.join(__dirname, "../../client/public");
 
-// Main route - serve index.html
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../../client/public/index.html"));
-});
-
-// Catch all other routes
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../../client/public/index.html"));
-});
+if (require('fs').existsSync(buildPath)) {
+  app.use(express.static(buildPath));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(buildPath, "index.html"));
+  });
+} else if (require('fs').existsSync(publicPath)) {
+  app.use(express.static(publicPath));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(publicPath, "index.html"));
+  });
+} else {
+  app.get("*", (req, res) => {
+    res.json({ message: "Frontend not built yet" });
+  });
+}
 
 
 // ==========================
