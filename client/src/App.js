@@ -40,23 +40,35 @@ class App extends Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ padding: '20px', textAlign: 'center' }}>
+        <div style={{ padding: '20px', textAlign: 'center', background: 'white', color: 'black', minHeight: '100vh' }}>
           <h2>Something went wrong.</h2>
           <button onClick={() => window.location.reload()}>Reload Page</button>
         </div>
       );
     }
 
-    return (
-      <Provider store={store}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Alert />
-          <Routes />
-          
-        </ThemeProvider>
-      </Provider>
-    );
+    try {
+      return (
+        <Provider store={store}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <div style={{ minHeight: '100vh', background: '#1a1a2e' }}>
+              <Alert />
+              <Routes />
+            </div>
+          </ThemeProvider>
+        </Provider>
+      );
+    } catch (error) {
+      console.error('Render error:', error);
+      return (
+        <div style={{ padding: '20px', textAlign: 'center', background: 'white', color: 'black', minHeight: '100vh' }}>
+          <h2>🎬 Movie Ticket Booking</h2>
+          <p>Loading application...</p>
+          <button onClick={() => window.location.reload()}>Reload</button>
+        </div>
+      );
+    }
   }
 }
 export default App;
