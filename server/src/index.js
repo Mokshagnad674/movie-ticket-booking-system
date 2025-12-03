@@ -66,23 +66,29 @@ app.use(showtimeRouter);
 app.use(reservationRouter);
 app.use(invitationsRouter);
 
-// Serve React build files
+// Debug build status
 const buildPath = path.join(__dirname, "../../client/build");
-const publicPath = path.join(__dirname, "../../client/public");
+const fs = require('fs');
 
-if (require('fs').existsSync(buildPath)) {
+console.log('Build path exists:', fs.existsSync(buildPath));
+if (fs.existsSync(buildPath)) {
+  console.log('Build contents:', fs.readdirSync(buildPath));
+}
+
+if (fs.existsSync(buildPath) && fs.existsSync(path.join(buildPath, 'index.html'))) {
+  console.log('Serving React build');
   app.use(express.static(buildPath));
   app.get("*", (req, res) => {
     res.sendFile(path.join(buildPath, "index.html"));
   });
-} else if (require('fs').existsSync(publicPath)) {
-  app.use(express.static(publicPath));
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(publicPath, "index.html"));
-  });
 } else {
+  console.log('Build not found, serving debug info');
   app.get("*", (req, res) => {
-    res.json({ message: "Frontend not built yet" });
+    res.json({ 
+      message: "Build status",
+      buildExists: fs.existsSync(buildPath),
+      buildContents: fs.existsSync(buildPath) ? fs.readdirSync(buildPath) : 'No build dir'
+    });
   });
 }
 

@@ -7,7 +7,7 @@
     "start": "node server/src/index.js",
     "dev": "nodemon server/src/index.js",
     "client": "cd client && npm install && npm run start",
-    "build": "cd client && npm install --force && npm run build",
+    "build": "echo 'Starting build...' && cd client && echo 'Installing deps...' && npm install --force && echo 'Building React...' && npm run build && echo 'Build complete!' && ls -la build/",
     "heroku-postbuild": "npm run build"
   },
   "keywords": ["movie", "booking", "ticket", "cinema"],
