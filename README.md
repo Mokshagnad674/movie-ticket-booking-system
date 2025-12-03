@@ -217,3 +217,20 @@ This project is licensed under the MIT License - see the [License](LICENSE) file
 
 14. [GitHub - MovieStore Code Repository](https://github.com/charangajjala/MovieStore)  
     The GitHub repository for the source code of the Movie Ticket Booking System project.
+
+## **Docker**
+
+- **Build and run with Docker Compose:** Builds `client` and `server` images and starts `mongo`.
+
+  ```bash
+  docker-compose up --build
+  ```
+
+- **Services:**
+  - `client` served on `http://localhost:3000` (nginx)
+  - `server` API on `http://localhost:3001`
+  - `mongo` on `mongodb://localhost:27017`
+
+- **Persisted uploads:** Local `server/uploads` is mounted into the `server` container.
+
+If you need to rebuild only the server or client image, pass the service name to `docker-compose build <service>`.
