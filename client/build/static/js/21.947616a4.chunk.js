@@ -1,2 +1,0 @@
-(this["webpackJsonpmoviestore-client"]=this["webpackJsonpmoviestore-client"]||[]).push([[21],{387:function(e,t,a){"use strict";a.r(t);var n=a(0),i=a.n(n);t.default=()=>i.a.createElement("div",{style:{padding:"2rem"}},i.a.createElement("h2",null,"Theatre Owner - Cinema List"),i.a.createElement("p",null,"This page will display all cinemas added by the theatre owner."))}}]);
-//# sourceMappingURL=21.947616a4.chunk.js.map
