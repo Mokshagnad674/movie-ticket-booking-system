@@ -14,7 +14,7 @@ export const uploadImage = (id, image) => async dispatch => {
   try {
     const data = new FormData();
     data.append('file', image);
-    const url = '/users/photo/' + id;
+    const url = `${process.env.REACT_APP_API_BASE_URL || ''}/users/photo/${id}`;
     const response = await fetch(url, {
       method: 'POST',
       body: data
@@ -34,7 +34,7 @@ export const uploadImage = (id, image) => async dispatch => {
 // Login user
 export const login = (username, password) => async dispatch => {
   try {
-    const url = '/users/login';
+    const url = `${process.env.REACT_APP_API_BASE_URL || ''}/users/login`;
     const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -65,7 +65,7 @@ export const facebookLogin = e => async dispatch => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, userID, name })
     };
-    const url = '/users/login/facebook';
+    const url = `${process.env.REACT_APP_API_BASE_URL || ''}/users/login/facebook`;
     const response = await fetch(url, options);
     const responseData = await response.json();
 
@@ -97,7 +97,7 @@ export const googleLogin = (response) => async dispatch => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, googleId, name })
     };
-    const url = '/users/login/google';
+    const url = `${process.env.REACT_APP_API_BASE_URL || ''}/users/login/google`;
     const fetchResponse = await fetch(url, options);
     const responseData = await fetchResponse.json();
 
@@ -128,7 +128,7 @@ export const register = ({
 }) => async dispatch => {
   try {
     console.log('Registering user:', { name, username, email, phone, role });
-    const url = '/users';
+    const url = `${process.env.REACT_APP_API_BASE_URL || ''}/users`;
     const body = { name, username, email, phone, password, role: role === 'admin' ? 'admin' : 'user' };
     const response = await fetch(url, {
       method: 'POST',
@@ -158,7 +158,7 @@ export const register = ({
 export const loadUser = () => async dispatch => {
   if (!isLoggedIn()) return;
   try {
-    const url = '/users/me';
+    const url = `${process.env.REACT_APP_API_BASE_URL || ''}/users/me`;
     const response = await fetch(url, {
       method: 'GET',
       headers: setAuthHeaders()
@@ -183,7 +183,7 @@ export const loadUser = () => async dispatch => {
 export const logout = () => async dispatch => {
   try {
     const token = localStorage.getItem('jwtToken');
-    const url = '/users/logout';
+    const url = `${process.env.REACT_APP_API_BASE_URL || ''}/users/logout`;
     const response = await fetch(url, {
       method: 'POST',
       headers: {

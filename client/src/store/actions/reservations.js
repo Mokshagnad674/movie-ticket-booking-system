@@ -4,7 +4,7 @@ import { setAlert } from './alert';
 export const getReservations = () => async dispatch => {
   try {
     const token = localStorage.getItem('jwtToken');
-    const url = '/reservations';
+    const url = `${process.env.REACT_APP_API_BASE_URL || ''}/reservations`;
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -25,7 +25,7 @@ export const getReservations = () => async dispatch => {
 export const getSuggestedReservationSeats = username => async dispatch => {
   try {
     const token = localStorage.getItem('jwtToken');
-    const url = '/reservations/usermodeling/' + username;
+    const url = `${process.env.REACT_APP_API_BASE_URL || ''}/reservations/usermodeling/${username}`;
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -48,7 +48,7 @@ export const addReservation = reservation => async dispatch => {
   try {
     console.log('Creating reservation:', reservation);
     const token = localStorage.getItem('jwtToken');
-    const url = '/reservations';
+    const url = `${process.env.REACT_APP_API_BASE_URL || ''}/reservations`;
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -90,7 +90,7 @@ export const addReservation = reservation => async dispatch => {
 export const updateReservation = (reservation, id) => async dispatch => {
   try {
     const token = localStorage.getItem('jwtToken');
-    const url = '/reservations/' + id;
+    const url = `${process.env.REACT_APP_API_BASE_URL || ''}/reservations/${id}`;
     const response = await fetch(url, {
       method: 'PATCH',
       headers: {
@@ -115,7 +115,7 @@ export const updateReservation = (reservation, id) => async dispatch => {
 export const removeReservation = id => async dispatch => {
   try {
     const token = localStorage.getItem('jwtToken');
-    const url = '/reservations/' + id;
+    const url = `${process.env.REACT_APP_API_BASE_URL || ''}/reservations/${id}`;
     const response = await fetch(url, {
       method: 'DELETE',
       headers: {
