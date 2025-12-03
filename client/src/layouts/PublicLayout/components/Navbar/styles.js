@@ -5,14 +5,15 @@ export default theme => ({
     left: 0,
     width: '100%',
     padding: '1.25rem 20px',
-    display: 'flex',
+    display: 'flex !important',
     flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'space-between',
     transform: 'translate3d(0,0,0)',
     backfaceVisibility: 'hidden',
-    zIndex: 999,
-    transition: 'all 300ms ease-in'
+    zIndex: 9999,
+    transition: 'all 300ms ease-in',
+    background: 'rgba(0,0,0,0.8)'
   },
   navbarColor: {
     background: theme.palette.background.dark,
@@ -37,7 +38,7 @@ export default theme => ({
   },
   navLinks: {
     marginLeft: 'auto',
-    display: 'flex'
+    display: 'flex !important'
   },
   navLink: {
     position: 'relative',
@@ -66,7 +67,11 @@ export default theme => ({
       height: '9px'
     }
   },
-  navAccount: { marginLeft: 'auto', marginRight: theme.spacing(3) },
+  navAccount: { 
+    marginLeft: 'auto', 
+    marginRight: theme.spacing(3),
+    display: 'block !important'
+  },
   navMobile: { marginRight: theme.spacing(1) },
   navIcon: {
     display: 'none',
