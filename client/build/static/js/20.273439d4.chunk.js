@@ -1,0 +1,2 @@
+(this["webpackJsonpmoviestore-client"]=this["webpackJsonpmoviestore-client"]||[]).push([[20],{239:function(e,t,a){"use strict";a.r(t);var n=a(0),s=a.n(n);t.default=()=>s.a.createElement("div",{style:{padding:"2rem"}},s.a.createElement("h2",null,"Theatre Owner Account Page"),s.a.createElement("p",null,"This is a placeholder for account settings and details."))}}]);
+//# sourceMappingURL=20.273439d4.chunk.js.map
