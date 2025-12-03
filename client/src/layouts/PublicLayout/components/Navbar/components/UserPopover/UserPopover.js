@@ -1,7 +1,6 @@
 import React from 'react';
 import Popover from '@material-ui/core/Popover';
-import IconButton from '@material-ui/core/IconButton';
-import PersonIcon from '@material-ui/icons/Person';
+import Button from '@material-ui/core/Button';
 
 export default function UserPopover(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -19,9 +18,9 @@ export default function UserPopover(props) {
 
   return (
     <>
-      <IconButton aria-describedby={id} onClick={handleClick}>
-        <PersonIcon fontSize="large" />
-      </IconButton>
+      <Button aria-describedby={id} onClick={handleClick} variant="outlined" color="primary">
+        Login
+      </Button>
       <Popover
         id={id}
         open={open}
