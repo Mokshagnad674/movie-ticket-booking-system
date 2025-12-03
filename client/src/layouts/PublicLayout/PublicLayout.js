@@ -15,8 +15,12 @@ function PublicLayout(props) {
   const { children, withFooter = true } = props;
   return (
     <div className={classes.root}>
-      <Navbar />
-      {children}
+      <div style={{position: 'fixed', top: 0, left: 0, width: '100%', zIndex: 99999, background: 'rgba(0,0,0,0.9)', padding: '10px 20px'}}>
+        <Navbar />
+      </div>
+      <div style={{paddingTop: '80px'}}>
+        {children}
+      </div>
       {withFooter && <Footer />}
     </div>
   );
